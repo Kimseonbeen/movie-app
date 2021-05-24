@@ -15,7 +15,7 @@ function FavoritePage() {
        
     }, [])
 
-
+    // favorite 조회 
     const fetchFavoredMovie = () => {
         Axios.post('/api/favorite/getFavoredMovie', { userFrom: localStorage.getItem('userId') })
             .then(response => {
@@ -37,6 +37,7 @@ function FavoritePage() {
         Axios.post('/api/favorite/removeFromFavorite', variables)
             .then(response => {
                 if(response.data.success) {
+                    // 삭제 후 재 조회
                     fetchFavoredMovie()
                 } else {
                     alert("리스트에서 지우는데 실패했습니다.")
