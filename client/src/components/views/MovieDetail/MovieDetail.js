@@ -7,6 +7,7 @@ import { Row } from 'antd';
 import Favorite from './Sections/Favorite';
 import Comment from './Sections/Comment';
 import LikeDislikes from './Sections/LikeDislikes';
+import axios from 'axios';
 
 function MovieDetail(props) {
 
@@ -17,24 +18,24 @@ function MovieDetail(props) {
     const [CommentLists, setCommentLists] = useState([])
     const [LoadingForMovie, setLoadingForMovie] = useState(true)
     const [LoadingForCasts, setLoadingForCasts] = useState(true)
+    const movieVariable = {
+        movieId: movieId
+    }
 
     useEffect(() => {
 
-        let endpointCrew = `${API_URL}movie/${movieId}/credits?api_key=${API_KEY}` 
-        
-        let endpointInfo = `${API_URL}movie/${movieId}?api_key=${API_KEY}`
+        let endpointForMovieInfo = `${API_URL}movie/${movieId}?api_key=${API_KEY}&language=en-US`;
+        fetchDetailInfo(endpointForMovieInfo)
 
-        fetch(endpointInfo)
-            .then(response => response.json())
+        axios.post('/api/comment/getComments', movieVariable)
             .then(response => {
-                console.log("1");
-                setMovie(response);
-            })
-
-        fetch(endpointCrew)
-            .then(response => response.json())
-            .then(response => {
-                setCasts(response.cast)
+                console.log(response)
+                if (response.data.success) {
+                    console.log('response.data.comments', response.data.comments)
+                    setCommentLists(response.data.comments)
+                } else {
+                    alert('Failed to get comments Info')
+                }
             })
 
     }, [])
